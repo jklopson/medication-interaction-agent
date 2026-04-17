@@ -25,7 +25,7 @@ def results_to_pdf(results: list[dict]) -> bytes:
             pdf.cell(0, 5, 'Sources: ' + ', '.join(r['sources']), ln=True)
         pdf.ln(4)
 
-    return pdf.output()
+    return bytes(pdf.output())
 
 st.title('MedCheck')
 st.write('Enter a list of your medications below. Either write one per line or separated by commas.')
