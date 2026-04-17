@@ -7,19 +7,7 @@ from fpdf import FPDF
 import fpdf as fpdf_module
 from datetime import datetime
 
-LOGO_SVG = """
-<svg width="100%" viewBox="0 0 680 320" role="img" xmlns="http://www.w3.org/2000/svg">
-  <title>MedCheck logo</title>
-  <desc>MedCheck logo featuring a shield with a medical cross and a checkmark, with the wordmark beside it</desc>
-  <path d="M120 48 L200 48 L200 185 Q160 218 120 238 Q80 218 80 185 Z" fill="#1a56db"/>
-  <path d="M120 58 L192 58 L192 183 Q160 210 120 228 Q88 210 88 183 Z" fill="#1e40af" opacity="0.35"/>
-  <rect x="97" y="118" width="86" height="28" rx="5" fill="white"/>
-  <rect x="126" y="89" width="28" height="86" rx="5" fill="white"/>
-  <polyline points="148,162 158,176 178,150" fill="none" stroke="#22c55e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="222" y="168" font-family="sans-serif" font-weight="500" font-size="52" fill="#1a56db">MedCheck</text>
-  <text x="224" y="198" font-family="sans-serif" font-weight="400" font-size="17" fill="#6b7280" letter-spacing="0.04em">drug interaction checker</text>
-</svg>
-"""
+GIF_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Bird_Doctor_GIF.gif')
 
 FONTS_DIR = os.path.join(os.path.dirname(fpdf_module.__file__), 'fonts')
 
@@ -48,8 +36,13 @@ def results_to_pdf(results: list[dict]) -> bytes:
 
     return bytes(pdf.output())
 
-st.markdown(LOGO_SVG, unsafe_allow_html=True)
-st.write('Enter a list of your medications below. Either write one per line or separated by commas.')
+col = st.columns([1, 2, 1])[1]
+with col:
+    with open(GIF_PATH, 'rb') as f:
+        st.image(f.read())
+    st.markdown("<h1 style='text-align:center;'>MedCheck</h1><p style='text-align:center; color:#6b7280;'>drug interaction checker</p>", unsafe_allow_html=True)
+st.write('Enter a list of your medications below. Please write one per line and ensure correct spelling. MedCheck will return back with any known interactions, which can be downloaded as a PDF for your personal records!')
+st.write('Please consult a medical professional before taking any actions based on our analysis or with any questions you may have.')
 
 raw_input = st.text_area('Medications', height=150, placeholder='e.g.\nlisinopril\nmetformin\natorvastatin')
 
