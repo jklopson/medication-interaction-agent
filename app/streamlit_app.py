@@ -7,12 +7,9 @@ from fpdf import FPDF
 import fpdf as fpdf_module
 from datetime import datetime
 
-
 FONTS_DIR = os.path.dirname(os.path.abspath(__file__))
 
 GIF_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Bird_Doctor_GIF.gif')
-
-FONTS_DIR = os.path.join(os.path.dirname(fpdf_module.__file__), 'fonts')
 
 def results_to_pdf(results: list[dict]) -> bytes:
     pdf = FPDF()
