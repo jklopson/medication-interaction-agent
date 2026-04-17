@@ -5,6 +5,7 @@ from tools.rxnorm import normalize_medication
 from tools.openfda import get_label_interactions, get_adverse_event_count
 from agent.prompts import SYSTEM_PROMPT, format_tool_results
 from agent.grader import has_sufficient_data
+from itertools import combinations
 
 load_dotenv()
 MODEL = os.getenv('GRANITE_MODEL')
@@ -59,3 +60,12 @@ def run(drug_a_raw: str, drug_b_raw: str) -> dict:
         'drug_a': drug_a, 'drug_b': drug_b,
         'sources': sources, 'refused': False
     }
+
+def run_multi(drugs: list[str]) -> list[dict]:
+    """
+    Run interaction checks for all pairs in a list of drugs.
+    Returns a list of result dicts (same shape as run()).
+    """
+    if len(drugs) < 2:
+        return []
+    return [run(a, b) for a, b in combinations(drugs, 2)]
