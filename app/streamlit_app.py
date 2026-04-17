@@ -48,7 +48,7 @@ def results_to_pdf(results: list[dict]) -> bytes:
 
     return bytes(pdf.output())
 
-st.title('MedCheck')
+st.markdown(LOGO_SVG, unsafe_allow_html=True)
 st.write('Enter a list of your medications below. Either write one per line or separated by commas.')
 
 raw_input = st.text_area('Medications', height=150, placeholder='e.g.\nlisinopril\nmetformin\natorvastatin')
