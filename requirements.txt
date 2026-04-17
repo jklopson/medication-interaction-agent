@@ -2,4 +2,4 @@ replicate
 python-dotenv
 streamlit
 requests
-fpdf
+fpdf2
