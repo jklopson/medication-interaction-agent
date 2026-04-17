@@ -36,11 +36,7 @@ def results_to_pdf(results: list[dict]) -> bytes:
 
     return bytes(pdf.output())
 
-col = st.columns([1, 2, 1])[1]
-with col:
-    with open(GIF_PATH, 'rb') as f:
-        st.image(f.read())
-    st.markdown("<h1 style='text-align:center;'>MedCheck</h1><p style='text-align:center; color:#6b7280;'>Drug Interaction Checker</p>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align:center;'>MedCheck</h1><p style='text-align:center; color:#6b7280;'>Drug Interaction Checker</p>", unsafe_allow_html=True)
 st.write('Enter a list of your medications below. Either write one per line or separated by commas.')
 
 raw_input = st.text_area('Medications', height=150, placeholder='e.g.\nlisinopril\nmetformin\natorvastatin')
@@ -53,11 +49,11 @@ if st.button('Check all interactions'):
     else:
         st.info(f'Checking {len(list(__import__("itertools").combinations(drugs, 2)))} pairs...')
 
-        loading_slot = st.empty()
+        import base64
         with open(GIF_PATH, 'rb') as f:
             gif_bytes = f.read()
-        import base64
         gif_b64 = base64.b64encode(gif_bytes).decode()
+        loading_slot = st.empty()
         loading_slot.markdown(f"""
             <div style="text-align:center; padding: 1rem 0;">
                 <img src="data:image/gif;base64,{gif_b64}" width="220"/>
