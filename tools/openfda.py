@@ -6,17 +6,18 @@ BASE = 'https://api.fda.gov/drug'
 def get_label_interactions(drug_name: str) -> str | None:
     """Pull drug_interactions field from FDA label. Returns text or None."""
     try:
-        r = requests.get(
-            f'{BASE}/label.json',
-            params={'search': f'openfda.generic_name:{drug_name}', 'limit': 1},
-            timeout=8
-        )
-        r.raise_for_status()
-        results = r.json().get('results', [])
-        if not results:
-            return None
-        interactions = results[0].get('drug_interactions', [])
-        return interactions[0] if interactions else None
+        for field in ['openfda.generic_name', 'openfda.brand_name', 'drug_interactions']:
+            r = requests.get(
+                f'{BASE}/label.json?search={field}:"{drug_name}"&limit=1',
+                timeout=8
+            )
+            if r.status_code == 200:
+                results = r.json().get('results', [])
+                if results:
+                    interactions = results[0].get('drug_interactions', [])
+                    if interactions:
+                        return interactions[0]
+        return None
     except Exception:
         return None
 
