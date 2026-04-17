@@ -7,7 +7,13 @@ from fpdf import FPDF
 import fpdf as fpdf_module
 from datetime import datetime
 
+<<<<<<< HEAD
 FONTS_DIR = os.path.dirname(os.path.abspath(__file__))
+=======
+GIF_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Bird_Doctor_GIF.gif')
+
+FONTS_DIR = os.path.join(os.path.dirname(fpdf_module.__file__), 'fonts')
+>>>>>>> 0f65469c443dc9b33aa602b355057d049654b0fb
 
 def results_to_pdf(results: list[dict]) -> bytes:
     pdf = FPDF()
@@ -34,8 +40,13 @@ def results_to_pdf(results: list[dict]) -> bytes:
 
     return bytes(pdf.output())
 
-st.title('MedCheck')
-st.write('Enter a list of your medications below. Either write one per line or separated by commas.')
+col = st.columns([1, 2, 1])[1]
+with col:
+    with open(GIF_PATH, 'rb') as f:
+        st.image(f.read())
+    st.markdown("<h1 style='text-align:center;'>MedCheck</h1><p style='text-align:center; color:#6b7280;'>drug interaction checker</p>", unsafe_allow_html=True)
+st.write('Enter a list of your medications below. Please write one per line and ensure correct spelling. MedCheck will return back with any known interactions, which can be downloaded as a PDF for your personal records!')
+st.write('Please consult a medical professional before taking any actions based on our analysis or with any questions you may have.')
 
 raw_input = st.text_area('Medications', height=150, placeholder='e.g.\nlisinopril\nmetformin\natorvastatin')
 
