@@ -4,23 +4,31 @@ import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from agent.react_loop import run_multi
 from fpdf import FPDF
+import fpdf as fpdf_module
 from datetime import datetime
+
+FONTS_DIR = os.path.join(os.path.dirname(fpdf_module.__file__), 'fonts')
 
 def results_to_pdf(results: list[dict]) -> bytes:
     pdf = FPDF()
+    pdf.add_font('DejaVu', style='',  fname=os.path.join(FONTS_DIR, 'DejaVuSans.ttf'))
+    pdf.add_font('DejaVu', style='B', fname=os.path.join(FONTS_DIR, 'DejaVuSansCondensed-Bold.ttf'))
+    pdf.add_font('DejaVu', style='I', fname=os.path.join(FONTS_DIR, 'DejaVuSansCondensed-Oblique.ttf'))
     pdf.add_page()
-    pdf.add_font('DejaVu', '', '/path/to/DejaVuSans.ttf')
+
+    pdf.set_font('DejaVu', 'B', 16)
     pdf.cell(0, 10, 'MedCheck Interaction Report', ln=True)
+    pdf.set_font('DejaVu', '', 9)
     pdf.cell(0, 6, f"Generated {datetime.now().strftime('%B %d, %Y')}", ln=True)
     pdf.ln(6)
 
     for r in results:
-        pdf.set_font('Helvetica', 'B', 12)
+        pdf.set_font('DejaVu', 'B', 12)
         pdf.cell(0, 8, f"{r['drug_a'].title()} + {r['drug_b'].title()}", ln=True)
-        pdf.set_font('Helvetica', '', 10)
+        pdf.set_font('DejaVu', '', 10)
         pdf.multi_cell(0, 6, r['output'])
         if r['sources']:
-            pdf.set_font('Helvetica', 'I', 8)
+            pdf.set_font('DejaVu', 'I', 8)
             pdf.cell(0, 5, 'Sources: ' + ', '.join(r['sources']), ln=True)
         pdf.ln(4)
 
