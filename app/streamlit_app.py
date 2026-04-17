@@ -9,9 +9,8 @@ from datetime import datetime
 def results_to_pdf(results: list[dict]) -> bytes:
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font('Helvetica', 'B', 16)
+    pdf.add_font('DejaVu', '', '/path/to/DejaVuSans.ttf')
     pdf.cell(0, 10, 'MedCheck Interaction Report', ln=True)
-    pdf.set_font('Helvetica', '', 9)  # was 'Helvatica'
     pdf.cell(0, 6, f"Generated {datetime.now().strftime('%B %d, %Y')}", ln=True)
     pdf.ln(6)
 
