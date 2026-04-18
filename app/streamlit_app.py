@@ -39,7 +39,7 @@ def results_to_pdf(results: list[dict]) -> bytes:
         pdf.multi_cell(0, 6, sanitize(r['output']))
         if r['sources']:
             pdf.set_font('Helvetica', 'I', 8)
-            pdf.cell(0, 5, 'Sources: ' + sanitize(', '.join(r['sources'])), new_x="LMARGIN", new_y="NEXT")
+            pdf.multi_cell(0, 5, 'Sources: ' + sanitize(', '.join(r['sources'])))
         pdf.ln(4)
 
     return bytes(pdf.output())
