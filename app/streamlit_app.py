@@ -50,10 +50,9 @@ st.markdown("""
     h1 a { display: none; }
     </style>
     <h1>MedCheck</h1>
-    <p style='text-align:center; color:#6b7280;'>Drug Interaction Checker</p>
+    <p style='text-align:center; color:#6b7280;'>Enter your medications below, one per line. MedCheck will check for known interactions which can be downloaded as a PDF! Please consult a medical professional before taking any actions based on our analysis.</p>
+    <br/>
 """, unsafe_allow_html=True)
-st.write('Enter a list of your medications below. Please write one per line and ensure correct spelling. MedCheck will return back with any known interactions, which can be downloaded as a PDF for your personal records!')
-st.write('Please consult a medical professional before taking any actions based on our analysis or with any questions you may have.')
 
 raw_input = st.text_area('Medications', height=150, placeholder='e.g.\nlisinopril\nmetformin\natorvastatin')
 
