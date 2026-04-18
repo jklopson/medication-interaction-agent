@@ -3,35 +3,44 @@ import streamlit as st
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from agent.react_loop import run_multi
-from fpdf import FPDF
-import fpdf as fpdf_module
+import base64
 from datetime import datetime
 import base64
 
+from fpdf import FPDF
+
 GIF_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Bird_Doctor_GIF.gif')
-FONTS_DIR = os.path.join(os.path.dirname(fpdf_module.__file__), 'fonts')
+
+def sanitize(text: str) -> str:
+    return (text
+        .replace('\u2014', '--')
+        .replace('\u2013', '-')
+        .replace('\u2018', "'")
+        .replace('\u2019', "'")
+        .replace('\u201c', '"')
+        .replace('\u201d', '"')
+        .replace('\u2026', '...')
+        .encode('ascii', errors='ignore').decode('ascii')
+    )
 
 def results_to_pdf(results: list[dict]) -> bytes:
     pdf = FPDF()
-    pdf.add_font('DejaVu', style='',  fname=os.path.join(FONTS_DIR, 'DejaVuSans.ttf'))
-    pdf.add_font('DejaVu', style='B', fname=os.path.join(FONTS_DIR, 'DejaVuSansCondensed-Bold.ttf'))
-    pdf.add_font('DejaVu', style='I', fname=os.path.join(FONTS_DIR, 'DejaVuSansCondensed-Oblique.ttf'))
     pdf.add_page()
 
-    pdf.set_font('DejaVu', 'B', 16)
+    pdf.set_font('Helvetica', 'B', 16)
     pdf.cell(0, 10, 'MedCheck Interaction Report', ln=True)
-    pdf.set_font('DejaVu', '', 9)
+    pdf.set_font('Helvetica', '', 9)
     pdf.cell(0, 6, f"Generated {datetime.now().strftime('%B %d, %Y')}", ln=True)
     pdf.ln(6)
 
     for r in results:
-        pdf.set_font('DejaVu', 'B', 12)
+        pdf.set_font('Helvetica', 'B', 12)
         pdf.cell(0, 8, f"{r['drug_a'].title()} + {r['drug_b'].title()}", ln=True)
-        pdf.set_font('DejaVu', '', 10)
-        pdf.multi_cell(0, 6, r['output'])
+        pdf.set_font('Helvetica', '', 10)
+        pdf.multi_cell(0, 6, sanitize(r['output']))
         if r['sources']:
-            pdf.set_font('DejaVu', 'I', 8)
-            pdf.cell(0, 5, 'Sources: ' + ', '.join(r['sources']), ln=True)
+            pdf.set_font('Helvetica', 'I', 8)
+            pdf.cell(0, 5, 'Sources: ' + sanitize(', '.join(r['sources'])), ln=True)
         pdf.ln(4)
 
     return bytes(pdf.output())
