@@ -45,12 +45,23 @@ def results_to_pdf(results: list[dict]) -> bytes:
     return bytes(pdf.output())
 
 st.markdown("""
-    <style>
-    h1 { text-align: center; }
-    h1 a { display: none; }
-    </style>
-    <h1>MedCheck</h1>
-    <p style='text-align:center; color:#6b7280;'>Enter your medications below, one per line. MedCheck will check for known interactions which can be downloaded as a PDF! Please consult a medical professional before taking any actions based on our analysis.</p>
+    <div style='display:flex; justify-content:center;'>
+      <svg width="540" viewBox="0 0 680 260" role="img" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(80, 40)">
+          <path d="M60 0 L120 0 Q134 0 134 14 L134 80 Q134 128 90 148 Q46 128 46 80 L46 14 Q46 0 60 0 Z" fill="#2563EB"/>
+          <rect x="81" y="46" width="18" height="56" rx="3" fill="#ffffff"/>
+          <rect x="62" y="65" width="56" height="18" rx="3" fill="#ffffff"/>
+          <circle cx="120" cy="132" r="18" fill="#10B981"/>
+          <polyline points="111,132 118,139 130,124" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="158" y="90" font-family="sans-serif" font-size="58" font-weight="500">
+            <tspan fill="#2563EB">Med</tspan><tspan fill="#1e293b">Check</tspan>
+          </text>
+          <text x="160" y="118" font-family="sans-serif" font-size="16" font-weight="400" fill="#9ca3af">DRUG INTERACTION CHECKER</text>
+          <line x1="160" y1="130" x2="460" y2="130" stroke="#2563EB" stroke-width="1.5" opacity="0.3"/>
+        </g>
+      </svg>
+    </div>
+    <p style='text-align:center; color:#6b7280; margin-top:1rem;'>Enter your medications below, one per line. MedCheck will check for known interactions which can be downloaded as a PDF. Please consult a medical professional before taking any actions based on our analysis.</p>
     <br/>
 """, unsafe_allow_html=True)
 
