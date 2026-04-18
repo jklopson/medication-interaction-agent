@@ -3,35 +3,44 @@ import streamlit as st
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from agent.react_loop import run_multi
-from fpdf import FPDF
-import fpdf as fpdf_module
+import base64
 from datetime import datetime
+import base64
 
-FONTS_DIR = os.path.dirname(os.path.abspath(__file__))
+from fpdf import FPDF
 
 GIF_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Bird_Doctor_GIF.gif')
 
+def sanitize(text: str) -> str:
+    return (text
+        .replace('\u2014', '--')
+        .replace('\u2013', '-')
+        .replace('\u2018', "'")
+        .replace('\u2019', "'")
+        .replace('\u201c', '"')
+        .replace('\u201d', '"')
+        .replace('\u2026', '...')
+        .encode('ascii', errors='ignore').decode('ascii')
+    )
+
 def results_to_pdf(results: list[dict]) -> bytes:
     pdf = FPDF()
-    pdf.add_font('DejaVu', style='',  fname=os.path.join(FONTS_DIR, 'DejaVuSans.ttf'))
-    pdf.add_font('DejaVu', style='B', fname=os.path.join(FONTS_DIR, 'DejaVuSansCondensed-Bold.ttf'))
-    pdf.add_font('DejaVu', style='I', fname=os.path.join(FONTS_DIR, 'DejaVuSansCondensed-Oblique.ttf'))
     pdf.add_page()
 
-    pdf.set_font('DejaVu', 'B', 16)
+    pdf.set_font('Helvetica', 'B', 16)
     pdf.cell(0, 10, 'MedCheck Interaction Report', ln=True)
-    pdf.set_font('DejaVu', '', 9)
+    pdf.set_font('Helvetica', '', 9)
     pdf.cell(0, 6, f"Generated {datetime.now().strftime('%B %d, %Y')}", ln=True)
     pdf.ln(6)
 
     for r in results:
-        pdf.set_font('DejaVu', 'B', 12)
+        pdf.set_font('Helvetica', 'B', 12)
         pdf.cell(0, 8, f"{r['drug_a'].title()} + {r['drug_b'].title()}", ln=True)
-        pdf.set_font('DejaVu', '', 10)
-        pdf.multi_cell(0, 6, r['output'])
+        pdf.set_font('Helvetica', '', 10)
+        pdf.multi_cell(0, 6, sanitize(r['output']))
         if r['sources']:
-            pdf.set_font('DejaVu', 'I', 8)
-            pdf.cell(0, 5, 'Sources: ' + ', '.join(r['sources']), ln=True)
+            pdf.set_font('Helvetica', 'I', 8)
+            pdf.cell(0, 5, 'Sources: ' + sanitize(', '.join(r['sources'])), ln=True)
         pdf.ln(4)
 
     return bytes(pdf.output())
@@ -49,26 +58,30 @@ if st.button('Check all interactions'):
     else:
         st.info(f'Checking {len(list(__import__("itertools").combinations(drugs, 2)))} pairs...')
 
-        import base64
         with open(GIF_PATH, 'rb') as f:
-            gif_bytes = f.read()
-        gif_b64 = base64.b64encode(gif_bytes).decode()
+            gif_b64 = base64.b64encode(f.read()).decode()
+
         loading_slot = st.empty()
         loading_slot.markdown(f"""
             <div style="text-align:center; padding: 1rem 0;">
                 <img src="data:image/gif;base64,{gif_b64}" width="220"/>
-                <div style="overflow:hidden; white-space:nowrap; margin-top:12px;">
-                    <span style="display:inline-block; font-size:22px; font-weight:500;
-                                 animation: marquee 3s linear infinite;">
-                        Loading &nbsp;&nbsp;&nbsp; Loading &nbsp;&nbsp;&nbsp; Loading &nbsp;&nbsp;&nbsp;
-                        Loading &nbsp;&nbsp;&nbsp; Loading &nbsp;&nbsp;&nbsp; Loading &nbsp;&nbsp;&nbsp;
+                <div style="margin-top:14px;">
+                    <span style="font-size:22px; font-weight:500; color:#1a56db;">
+                        Analyzing Medical Data<span class="dots"></span>
                     </span>
                 </div>
             </div>
             <style>
-            @keyframes marquee {{
-                0%   {{ transform: translateX(100%); }}
-                100% {{ transform: translateX(-100%); }}
+            .dots::after {{
+                content: '';
+                animation: dotcycle 1.5s steps(1, end) infinite;
+            }}
+            @keyframes dotcycle {{
+                0%   {{ content: ''; }}
+                25%  {{ content: '.'; }}
+                50%  {{ content: '..'; }}
+                75%  {{ content: '...'; }}
+                100% {{ content: ''; }}
             }}
             </style>
         """, unsafe_allow_html=True)
