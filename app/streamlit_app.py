@@ -61,7 +61,7 @@ st.markdown("""
         </g>
       </svg>
     </div>
-    <p style='text-align:center; color:#6b7280; margin-top:1rem;'>Enter your medications below, one per line. MedCheck will check for known interactions which can be downloaded as a PDF. Please consult a medical professional before taking any actions based on our analysis.</p>
+    <p style='text-align:center; color:#6b7280; margin-top:1rem;'>Enter your medications below, one per line. MedCheck will check for known interactions which can be downloaded as a PDF! Please consult a medical professional before taking any actions based on our analysis.</p>
     <br/>
 """, unsafe_allow_html=True)
 
