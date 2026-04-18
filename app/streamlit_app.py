@@ -45,7 +45,8 @@ def results_to_pdf(results: list[dict]) -> bytes:
     return bytes(pdf.output())
 
 st.markdown("<h1 style='text-align:center;'>MedCheck</h1><p style='text-align:center; color:#6b7280;'>Drug Interaction Checker</p>", unsafe_allow_html=True)
-st.write('Enter a list of your medications below. Either write one per line or separated by commas.')
+st.write('Enter a list of your medications below. Please write one per line and ensure correct spelling. MedCheck will return back with any known interactions, which can be downloaded as a PDF for your personal records!')
+st.write('Please consult a medical professional before taking any actions based on our analysis or with any questions you may have.')
 
 raw_input = st.text_area('Medications', height=150, placeholder='e.g.\nlisinopril\nmetformin\natorvastatin')
 
