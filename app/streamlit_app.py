@@ -5,7 +5,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from agent.react_loop import run_multi
 import base64
 from datetime import datetime
-import base64
 
 from fpdf import FPDF
 
@@ -28,19 +27,19 @@ def results_to_pdf(results: list[dict]) -> bytes:
     pdf.add_page()
 
     pdf.set_font('Helvetica', 'B', 16)
-    pdf.cell(0, 10, 'MedCheck Interaction Report', ln=True)
+    pdf.cell(0, 10, 'MedCheck Interaction Report', new_x="LMARGIN", new_y="NEXT")
     pdf.set_font('Helvetica', '', 9)
-    pdf.cell(0, 6, f"Generated {datetime.now().strftime('%B %d, %Y')}", ln=True)
+    pdf.cell(0, 6, f"Generated {datetime.now().strftime('%B %d, %Y')}", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(6)
 
     for r in results:
         pdf.set_font('Helvetica', 'B', 12)
-        pdf.cell(0, 8, f"{r['drug_a'].title()} + {r['drug_b'].title()}", ln=True)
+        pdf.cell(0, 8, f"{r['drug_a'].title()} + {r['drug_b'].title()}", new_x="LMARGIN", new_y="NEXT")
         pdf.set_font('Helvetica', '', 10)
         pdf.multi_cell(0, 6, sanitize(r['output']))
         if r['sources']:
             pdf.set_font('Helvetica', 'I', 8)
-            pdf.cell(0, 5, 'Sources: ' + sanitize(', '.join(r['sources'])), ln=True)
+            pdf.cell(0, 5, 'Sources: ' + sanitize(', '.join(r['sources'])), new_x="LMARGIN", new_y="NEXT")
         pdf.ln(4)
 
     return bytes(pdf.output())
