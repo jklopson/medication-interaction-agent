@@ -6,10 +6,10 @@ from agent.react_loop import run_multi
 from fpdf import FPDF
 import fpdf as fpdf_module
 from datetime import datetime
-
-FONTS_DIR = os.path.dirname(os.path.abspath(__file__))
+import base64
 
 GIF_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Bird_Doctor_GIF.gif')
+FONTS_DIR = os.path.join(os.path.dirname(fpdf_module.__file__), 'fonts')
 
 def results_to_pdf(results: list[dict]) -> bytes:
     pdf = FPDF()
@@ -49,26 +49,30 @@ if st.button('Check all interactions'):
     else:
         st.info(f'Checking {len(list(__import__("itertools").combinations(drugs, 2)))} pairs...')
 
-        import base64
         with open(GIF_PATH, 'rb') as f:
-            gif_bytes = f.read()
-        gif_b64 = base64.b64encode(gif_bytes).decode()
+            gif_b64 = base64.b64encode(f.read()).decode()
+
         loading_slot = st.empty()
         loading_slot.markdown(f"""
             <div style="text-align:center; padding: 1rem 0;">
                 <img src="data:image/gif;base64,{gif_b64}" width="220"/>
-                <div style="overflow:hidden; white-space:nowrap; margin-top:12px;">
-                    <span style="display:inline-block; font-size:22px; font-weight:500;
-                                 animation: marquee 3s linear infinite;">
-                        Loading &nbsp;&nbsp;&nbsp; Loading &nbsp;&nbsp;&nbsp; Loading &nbsp;&nbsp;&nbsp;
-                        Loading &nbsp;&nbsp;&nbsp; Loading &nbsp;&nbsp;&nbsp; Loading &nbsp;&nbsp;&nbsp;
+                <div style="margin-top:14px;">
+                    <span style="font-size:22px; font-weight:500; color:#1a56db;">
+                        Analyzing Medical Data<span class="dots"></span>
                     </span>
                 </div>
             </div>
             <style>
-            @keyframes marquee {{
-                0%   {{ transform: translateX(100%); }}
-                100% {{ transform: translateX(-100%); }}
+            .dots::after {{
+                content: '';
+                animation: dotcycle 1.5s steps(1, end) infinite;
+            }}
+            @keyframes dotcycle {{
+                0%   {{ content: ''; }}
+                25%  {{ content: '.'; }}
+                50%  {{ content: '..'; }}
+                75%  {{ content: '...'; }}
+                100% {{ content: ''; }}
             }}
             </style>
         """, unsafe_allow_html=True)
